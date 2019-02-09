@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -34,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mBackBtn;
 
     private int mCurrentPage;
-
-    private int STORAGE_PERMISSION_CODE = 1;
 
     public String[] slide_desc = {
             "The GPS Location service in Phone Sage need permission",
@@ -178,19 +177,35 @@ public class MainActivity extends AppCompatActivity {
                 mNextBtn.setText("Next");
                 mBackBtn.setText("");
             } else if (i == mDots.length-1) {
-                mNextBtn.setEnabled(true);
-                mBackBtn.setEnabled(true);
-                mBackBtn.setVisibility(View.VISIBLE);
+                if (ContextCompat.checkSelfPermission( MainActivity.this,
+                        permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+                    mNextBtn.setEnabled(true);
+                    mBackBtn.setEnabled(true);
+                    mBackBtn.setVisibility(View.VISIBLE);
 
-                mNextBtn.setText("Finish");
-                mBackBtn.setText("Back");
+                    mNextBtn.setText("Finish");
+                    mBackBtn.setText("Back");
+                } else {
+                    mSlideViewPager.setCurrentItem(i-1);
+                    requestStoragePermission(i-1);
+                }
+
             } else {
-                mNextBtn.setEnabled(true);
-                mBackBtn.setEnabled(true);
-                mBackBtn.setVisibility(View.VISIBLE);
+                if (ContextCompat.checkSelfPermission( MainActivity.this,
+                        permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+                    mNextBtn.setEnabled(true);
+                    mBackBtn.setEnabled(true);
+                    mBackBtn.setVisibility(View.VISIBLE);
 
-                mNextBtn.setText("Next");
-                mBackBtn.setText("Back");
+                    mNextBtn.setText("Next");
+                    mBackBtn.setText("Back");
+                } else {
+                    mSlideViewPager.setCurrentItem(i-1);
+                    requestStoragePermission(i-1);
+                }
+
             }
         }
 
