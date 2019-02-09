@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/slide_image"
-        android:layout_width="268dp"
-        android:layout_height="257dp"
+        android:layout_width="269dp"
+        android:layout_height="218dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         app:srcCompat="@drawable/location" />
@@ -35,5 +35,13 @@
         android:textAlignment="center"
         android:textColor="@color/colorTransparentWhite"
         android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/requestButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ok" />
 
 </LinearLayout>
