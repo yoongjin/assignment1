@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view){
                 if (ContextCompat.checkSelfPermission( MainActivity.this,
                         permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
                     mSlideViewPager.setCurrentItem(mCurrentPage+1);
                 } else {
                     requestStoragePermission(mCurrentPage);
@@ -179,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (i == mDots.length-1) {
                 if (ContextCompat.checkSelfPermission( MainActivity.this,
                         permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
                     mNextBtn.setEnabled(true);
                     mBackBtn.setEnabled(true);
                     mBackBtn.setVisibility(View.VISIBLE);
@@ -194,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 if (ContextCompat.checkSelfPermission( MainActivity.this,
                         permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(MainActivity.this, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
                     mNextBtn.setEnabled(true);
                     mBackBtn.setEnabled(true);
                     mBackBtn.setVisibility(View.VISIBLE);
