@@ -11,6 +11,7 @@ import android.support.v4.view.PagerAdapter;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -39,7 +40,7 @@ public class SliderAdapter extends PagerAdapter {
             R.drawable.location,
             R.drawable.storage,
             R.drawable.contacts,
-            R.drawable.alert,
+            /*R.drawable.alert,*/
             R.drawable.sms,
             R.drawable.phone,
 
@@ -49,7 +50,7 @@ public class SliderAdapter extends PagerAdapter {
             "LOCATION",
             "READ AND WRITE STORAGE",
             "READ AND WRITE CONTACTS",
-            "SYSTEM ALERT WINDOW",
+            /*"SYSTEM ALERT WINDOW",*/
             "READ / WRITE / SEND SMS",
             "PHONE PERMISSION",
     };
@@ -58,7 +59,7 @@ public class SliderAdapter extends PagerAdapter {
             "The GPS Location service in Phone Sage need permission",
             "We need this permission to read and write data when download file / backup or restore contacts and sms",
             "We need this permission to backup and restore contacts",
-            "We need this permission when receive a call",
+            /*"We need this permission when receive a call",*/
             "We need this permission to backup and restore sms and send phone location to safe phone number",
             "We need this permission to read call log or intercept call",
     };
@@ -67,7 +68,7 @@ public class SliderAdapter extends PagerAdapter {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
             Manifest.permission.READ_SMS,
             Manifest.permission.READ_PHONE_STATE,
     };
@@ -143,7 +144,9 @@ public class SliderAdapter extends PagerAdapter {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == STORAGE_PERMISSION_CODE){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("here","here");
                 Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show();
+
             } else{
                 Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show();
             }

