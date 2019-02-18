@@ -95,8 +95,8 @@
 
     <ImageView
         android:id="@+id/bugcon"
-        android:layout_width="66dp"
-        android:layout_height="72dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -114,10 +114,10 @@
 
     <ImageView
         android:id="@+id/bookcon"
-        android:layout_width="66dp"
-        android:layout_height="72dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginEnd="68dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginBottom="164dp"
         android:clickable="true"
         android:elevation="6dp"
         android:src="@drawable/bookcon"
@@ -127,18 +127,18 @@
 
     <ImageView
         android:id="@+id/bellcon"
-        android:layout_width="66dp"
-        android:layout_height="72dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginBottom="164dp"
         android:clickable="true"
         android:elevation="6dp"
         android:src="@drawable/bellcon"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bookcon"
-        app:layout_constraintHorizontal_bias="0.415"
+        app:layout_constraintHorizontal_bias="0.348"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
