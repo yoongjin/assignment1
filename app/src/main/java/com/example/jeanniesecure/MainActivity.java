@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_CONTACTS,
             Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.PACKAGE_USAGE_STATS,
-            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_PHONE_STATE,
     };
 
