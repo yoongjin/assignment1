@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">JeannieSecure</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="label_permissions">Please enable Microphone and Storage permissions.</string>
 </resources>

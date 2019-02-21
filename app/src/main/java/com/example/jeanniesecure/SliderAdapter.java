@@ -2,9 +2,14 @@ package com.example.jeanniesecure;
 //https://www.youtube.com/watch?v=byLKoPgB7yA&t=3s
 
 import android.Manifest;
+import android.app.AppOpsManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -41,7 +46,8 @@ public class SliderAdapter extends PagerAdapter {
             R.drawable.location,
             R.drawable.storage,
             R.drawable.contacts,
-            /*R.drawable.alert,*/
+            R.drawable.alert,
+            R.drawable.usage,
             R.drawable.sms,
             R.drawable.phone,
 
@@ -51,7 +57,8 @@ public class SliderAdapter extends PagerAdapter {
             "LOCATION",
             "READ AND WRITE STORAGE",
             "READ AND WRITE CONTACTS",
-            /*"SYSTEM ALERT WINDOW",*/
+            "SYSTEM ALERT WINDOW",
+            "USAGE",
             "READ / WRITE / SEND SMS",
             "PHONE PERMISSION",
     };
@@ -60,7 +67,8 @@ public class SliderAdapter extends PagerAdapter {
             "The GPS Location service in Phone Sage need permission",
             "We need this permission to read and write data when download file / backup or restore contacts and sms",
             "We need this permission to backup and restore contacts",
-            /*"We need this permission when receive a call",*/
+            "We need this permission when receive a call",
+            "We need this permission to track other application's usage",
             "We need this permission to backup and restore sms and send phone location to safe phone number",
             "We need this permission to read call log or intercept call",
     };
@@ -69,9 +77,20 @@ public class SliderAdapter extends PagerAdapter {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.READ_SMS,
             Manifest.permission.READ_PHONE_STATE,
+    };
+
+    public int[] permissions_code = {
+            1,
+            1,
+            1,
+            5469,
+            123,
+            1,
+            1,
     };
 
 
@@ -104,8 +123,26 @@ public class SliderAdapter extends PagerAdapter {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission( context,
-                        permissions[position]) == PackageManager.PERMISSION_GRANTED){
+                if (position == 3) {
+                    if (!Settings.canDrawOverlays(context)) {
+                        // You don't have permission
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!Settings.canDrawOverlays(context)) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+                                activity.startActivityForResult(intent, permissions_code[position]);
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (position == 4){
+                    if(!isAccessGranted()){
+                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                        activity.startActivity(intent);
+                    } else {
+                        Toast.makeText(context, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (ContextCompat.checkSelfPermission( context, permissions[position]) == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(context, "You have already granted this permission!", Toast.LENGTH_SHORT).show();
                 } else {
                     requestStoragePermission(position);
@@ -117,6 +154,7 @@ public class SliderAdapter extends PagerAdapter {
 
         return view;
     }
+
 
     private void requestStoragePermission(final int position) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permissions[position])) {
@@ -141,6 +179,21 @@ public class SliderAdapter extends PagerAdapter {
         }
     }
 
+    private boolean isAccessGranted() {
+        try {
+            PackageManager packageManager = activity.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(activity.getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) activity.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
+            }
+            return (mode == AppOpsManager.MODE_ALLOWED);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == STORAGE_PERMISSION_CODE){

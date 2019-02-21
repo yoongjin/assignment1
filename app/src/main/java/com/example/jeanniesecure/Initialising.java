@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,12 +20,6 @@ import android.widget.TextView;
 public class Initialising extends AppCompatActivity {
     private Handler mWaitHandler = new Handler();
 
-    Intent mServiceIntent;
-    private SensorService mSensorService;
-    Context ctx;
-    public Context getCtx() {
-        return ctx;
-    }
 
     ImageView bgapp, clover, bugcon, bookcon, bellcon;
     TextView initialisingtext, initialisingTitle, initialisingTitleDesc, scanText;
@@ -35,14 +30,7 @@ public class Initialising extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialising);
 
-
-/*      ctx = this;
-        mServiceIntent = new Intent(getCtx(), mSensorService.getClass());
-        mSensorService = new SensorService(getCtx());
-        mServiceIntent = new Intent(getCtx(), mSensorService.getClass());
-        if (!isMyServiceRunning(mSensorService.getClass())) {
-            startService(mServiceIntent);
-        }*/
+        /*startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));*/
         enqueueWork(bgapp);
         mWaitHandler.postDelayed(new Runnable() {
             @Override
@@ -92,27 +80,5 @@ public class Initialising extends AppCompatActivity {
         scanText.setVisibility(View.VISIBLE);
     }
 
-    //Starts the service only when not already running
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i ("isMyServiceRunning?", true+"");
-                return true;
-            }
-        }
-        Log.i ("isMyServiceRunning?", false+"");
-        return false;
-    }
 
-
-    //why do we want to stop exactly the service that we want to keep alive?
-    // Because if we do not stop it, the service will die with our app.
-    // Instead, by stopping the service, we will force the service to call its own onDestroy which will force it to recreate itself after the app is dead.
-/*    @Override
-    protected void onDestroy() {
-        stopService(mServiceIntent);
-        Log.i("Initialising", "onDestroy!");
-        super.onDestroy();
-    }*/
 }

