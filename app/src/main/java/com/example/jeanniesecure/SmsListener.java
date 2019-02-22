@@ -57,7 +57,7 @@ public class SmsListener extends BroadcastReceiver {
                         Gson gson = new Gson();
                         final String newDataArray = gson.toJson(dataArray);
 
-                        final String server_url = "http://10.0.2.2/VideoUpload/upload_data.php";
+                        final String server_url = "http://35.240.192.167/VideoUpload/upload_data.php";
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,
                                 new Response.Listener<String>() {
