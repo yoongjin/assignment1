@@ -26,6 +26,7 @@ public class SplashScreen extends AppCompatActivity{
             Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE,
     };
 

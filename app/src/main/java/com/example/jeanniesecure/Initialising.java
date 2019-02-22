@@ -35,6 +35,13 @@ public class Initialising extends AppCompatActivity {
                 transitionToMain();
             }
         }, 1000);
+        bugcon = (ImageView) findViewById(R.id.bugcon);
+        bugcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScanPage(v);
+            }
+        });
     }
 
     public void enqueueWork(View v){
@@ -75,4 +82,9 @@ public class Initialising extends AppCompatActivity {
         scanText.setVisibility(View.VISIBLE);
     }
 
+
+    public void ScanPage(View view) {
+        Intent intent = new Intent(this, Scan.class);
+        startActivity(intent);
+    }
 }

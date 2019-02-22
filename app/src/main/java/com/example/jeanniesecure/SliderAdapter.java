@@ -49,6 +49,7 @@ public class SliderAdapter extends PagerAdapter {
             R.drawable.alert,
             R.drawable.usage,
             R.drawable.sms,
+            R.drawable.mic,
             R.drawable.phone,
 
     };
@@ -60,6 +61,7 @@ public class SliderAdapter extends PagerAdapter {
             "SYSTEM ALERT WINDOW",
             "USAGE",
             "READ / WRITE / SEND SMS",
+            "MICROPHONE",
             "PHONE PERMISSION",
     };
 
@@ -70,6 +72,7 @@ public class SliderAdapter extends PagerAdapter {
             "We need this permission when receive a call",
             "We need this permission to track other application's usage",
             "We need this permission to backup and restore sms and send phone location to safe phone number",
+            "We need this permission to secure your microphone",
             "We need this permission to read call log or intercept call",
     };
 
@@ -80,6 +83,7 @@ public class SliderAdapter extends PagerAdapter {
             Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE,
     };
 
@@ -89,6 +93,7 @@ public class SliderAdapter extends PagerAdapter {
             1,
             5469,
             123,
+            1,
             1,
             1,
     };

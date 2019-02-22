@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -39,6 +40,9 @@
 
         <activity android:name=".BankVPN"/>
 
+        <activity android:name=".Scan"
+            android:parentActivityName=".MainActivity"/>
+
         <service
             android:name="com.example.jeanniesecure.ExampleJobIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE">
@@ -47,6 +51,12 @@
         <receiver android:name=".SmsListener">
             <intent-filter android:priority="1000">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".BootStartApp">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 

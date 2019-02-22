@@ -8,11 +8,39 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use secure channel to access iBanking app"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
+
     <ToggleButton
         android:id="@+id/toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ToggleButton"
-        android:textOff="Activiate VPN"
-        android:textOn="Deactiviate VPN" />
+        android:textOff="Redirect to iBanking App"
+        android:textOn="Deactiviate Secure Channel" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Screen Recording is required to detect any malicious activity"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No data will be stored."
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold|italic" />
 </LinearLayout>

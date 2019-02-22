@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical"
+    android:paddingTop="60dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/scanText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Scanning..."
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/packageIcon"
+        android:layout_width="240dp"
+        android:layout_height="187dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/alert" />
+
+    <TextView
+        android:id="@+id/packageText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Scanning..."
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</LinearLayout>

@@ -25,12 +25,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             "We need this permission when receive a call",
             "We need this permission to track other application's usage",
             "We need this permission to backup and restore sms and send phone location to safe phone number",
+            "We need this permission to secure your microphone",
             "We need this permission to read call log or intercept call",
     };
 
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE,
     };
 
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             1,
             5469,
             123,
+            1,
             1,
             1,
     };
@@ -143,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void addDotsIndicator(int position){
-        mDots = new TextView[7];
+        mDots = new TextView[8];
         mDotLayout.removeAllViews();
 
         for(int i = 0 ; i < mDots.length ; i++) {

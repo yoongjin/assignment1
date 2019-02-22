@@ -76,16 +76,15 @@ public class ExampleJobIntentService extends JobIntentService {
     public void startTimer() {
         //set a new Timer
         timer = new Timer();
-
-        //get a list of installed apps.
+/*        //get a list of installed apps.
         final PackageManager pm = getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
         for (ApplicationInfo packageInfo : packages) {
             Log.d(TAG, "Installed package :" + packageInfo.packageName);
-            /*Log.d(TAG, "Source dir : " + packageInfo.sourceDir);*/
+            *//*Log.d(TAG, "Source dir : " + packageInfo.sourceDir);*//*
             Log.d(TAG, "Launch Activity :" + pm.getLaunchIntentForPackage(packageInfo.packageName));
-        }
+        }*/
 
 
         //initialize the TimerTask's job
@@ -136,9 +135,13 @@ public class ExampleJobIntentService extends JobIntentService {
                 }*/ else if (!currentApp.equals("com.ocbc.mobile") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
                     redirected = false;
                     Log.d(TAG, "Stop Recording ");
-                    Intent AppIntent  = new Intent(getApplicationContext(), BankVPN.class);
-                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(AppIntent);
+
+                    Intent AppIntent  = new Intent(context, BankVPN.class);
+                    AppIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    AppIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    AppIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+                    AppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(AppIntent);
                     /*
                     AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     AppIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
