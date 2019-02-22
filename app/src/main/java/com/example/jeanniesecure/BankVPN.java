@@ -261,7 +261,7 @@ public class BankVPN extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                uploading = ProgressDialog.show(BankVPN.this, "Uploading File", "Please wait...", false, false);
+                uploading = ProgressDialog.show(BankVPN.this, "Deactivating Connection", "Please wait...", false, false);
             }
 
             @Override
