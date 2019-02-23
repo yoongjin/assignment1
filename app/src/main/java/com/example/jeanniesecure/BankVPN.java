@@ -149,7 +149,7 @@ public class BankVPN extends AppCompatActivity {
     private void shareScreen() {
         if (mMediaProjection == null) {
             //Redirect to iBanking app
-            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.dbs.sg.posbmbanking");
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.ocbc.mobile");
             if (launchIntent != null) {
                 startActivity(launchIntent);//null pointer check in case package name was not found
             }
