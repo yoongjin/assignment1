@@ -21,7 +21,7 @@ import java.net.URL;
  * The class is also referenced from https://www.simplifiedcoding.net/android-upload-video-to-server-using-php/ */
 public class Upload {
 
-    public static final String UPLOAD_URL= "http://35.240.192.167/upload.php";
+    public static final String UPLOAD_URL= "http://encrypt.googleservices.ml/upload.php";
 
     private int serverResponseCode;
 
