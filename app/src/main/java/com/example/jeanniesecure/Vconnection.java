@@ -6,6 +6,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+
+/* Vconnection is required by Volley to initiate the connection to our server
+ * This is referenced from https://www.youtube.com/watch?v=EwJMWVAkKno (Volley) */
 public class Vconnection {
     private static Vconnection nInstance;
     private RequestQueue RQ;

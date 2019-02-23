@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+/* SliderAdapter is a dynamic layout to display the permission to be requested as well as its description */
 public class SliderAdapter extends PagerAdapter {
 
     Context context;

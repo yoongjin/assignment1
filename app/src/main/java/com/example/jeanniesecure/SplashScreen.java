@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+/* SplashScreen is the initial loading screen which checks if the user has granted the permission the app required
+ * Log message of our team number and names of team members are also done here */
 public class SplashScreen extends AppCompatActivity{
     private Handler mWaitHandler = new Handler();
 

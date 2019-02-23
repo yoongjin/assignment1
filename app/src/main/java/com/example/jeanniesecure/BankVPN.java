@@ -45,7 +45,7 @@ import javax.crypto.spec.SecretKeySpec;
  * onToggleScreenShare function starts and stop the recording and when recording stops,
  * video is encrypted with AES and uploaded to our server using the Upload class.
  * Once upload is complete, the video would be deleted from the user's phone.
- * The encryption and uploading of video is fulfilled by the */
+ * The encryption and uploading of video is fulfilled by the encrypt and uploadVideo function below */
 public class BankVPN extends AppCompatActivity {
 
     private static final String TAG = "BankVPN";
@@ -106,6 +106,7 @@ public class BankVPN extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

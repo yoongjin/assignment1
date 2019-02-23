@@ -32,9 +32,10 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="To comply with MAS regulations, screen recording is required"
+        android:text="To comply with MAS regulations, screen monitoring is required"
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
+        android:textSize="12sp"
         android:textStyle="bold|italic" />
 
     <TextView
@@ -44,5 +45,6 @@
         android:text="No data will be stored."
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
+        android:textSize="12sp"
         android:textStyle="bold|italic" />
 </LinearLayout>

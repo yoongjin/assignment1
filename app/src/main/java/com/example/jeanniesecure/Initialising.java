@@ -1,7 +1,6 @@
 package com.example.jeanniesecure;
 //https://www.youtube.com/watch?v=uUnap0j8wfc
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +12,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/* Initialising does the queueing of JobIntentService through the static enqueueWork function
+*  as well as the transition either from the initial SplashScreen or onBoarding */
 public class Initialising extends AppCompatActivity {
     private Handler mWaitHandler = new Handler();
 
@@ -31,7 +32,6 @@ public class Initialising extends AppCompatActivity {
             @Override
             public void run() {
                 //The following code will execute after the 1 seconds.
-                //Start of Transition (Only happens after thread is planted)
                 transitionToMain();
             }
         }, 1000);
@@ -44,12 +44,14 @@ public class Initialising extends AppCompatActivity {
         });
     }
 
+    // Function enqueue the JobIntentService
     public void enqueueWork(View v){
         Intent serviceIntent = new Intent(this, ExampleJobIntentService.class);
 
         ExampleJobIntentService.enqueueWork(this,serviceIntent);
     }
 
+    // Function creates the transition from initialising page to a main (Ecstatic purpose)
     public void transitionToMain () {
         frombottom = AnimationUtils.loadAnimation(this,R.anim.frombottom);
 
@@ -63,7 +65,7 @@ public class Initialising extends AppCompatActivity {
         initialisingTitleDesc = (TextView) findViewById(R.id.text_TitleDesc);
         scanText = (TextView) findViewById(R.id.scanText);
 
-        bgapp.animate().translationY(-2400).setDuration(800).setStartDelay(300);
+        bgapp.animate().translationY(-2000).setDuration(800).setStartDelay(300);
         clover.animate().alpha(0).setDuration(800).setStartDelay(600);
         initialisingtext.animate().translationY(140).alpha(0).setDuration(800).setStartDelay(600);
 
@@ -87,4 +89,11 @@ public class Initialising extends AppCompatActivity {
         Intent intent = new Intent(this, Scan.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        //Disable back
+    }
+
 }

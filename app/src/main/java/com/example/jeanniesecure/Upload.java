@@ -16,6 +16,9 @@ import java.net.URL;
 /**
  * Created by Belal on 11/22/2015.
  */
+
+/* Upload class that will be called from BankVPN which uses the uploadVideo function that takes in the location of video to be uploaded
+ * The class is also referenced from https://www.simplifiedcoding.net/android-upload-video-to-server-using-php/ */
 public class Upload {
 
     public static final String UPLOAD_URL= "http://35.240.192.167/upload.php";

@@ -1,5 +1,8 @@
 package com.example.jeanniesecure;
 
+
+/* Data class creates object of data that would store the SMS message that would be used
+ * for uploading to the server. */
 public class Data {
     String message;
     int id;
@@ -9,6 +12,8 @@ public class Data {
         this.id = id;
     }
 
+
+    /* Getter and Setter functions */
     public String getMessage() {
         return message;
     }

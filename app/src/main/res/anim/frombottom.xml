@@ -3,16 +3,16 @@
     android:interpolator="@android:anim/accelerate_interpolator"
     android:startOffset="1000">
 
-    <translate
-        android:fromYDelta="10%"
-        android:toYDelta="0%"
-        android:duration="800"
-        />
+  <translate
+      android:fromYDelta="10%"
+      android:toYDelta="0%"
+      android:duration="800"
+      />
 
-    <alpha
-        android:fromAlpha="0.0"
-        android:toAlpha="1.0"
-        android:duration="600"
-        />
+  <alpha
+      android:fromAlpha="0.0"
+      android:toAlpha="1.0"
+      android:duration="600"
+      />
 
 </set>

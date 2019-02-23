@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+/* onBoarding runs through all the permissions granting process that will be required for the functionalities to work */
 public class onBoarding extends AppCompatActivity {
 
     private ViewPager mSlideViewPager;
@@ -293,5 +293,11 @@ public class onBoarding extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onBackPressed()
+    {
+        //Disable back
+    }
 
 }

