@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.jeanniesecure">
 
-    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -26,7 +24,7 @@
         android:usesCleartextTraffic="true">
 
 
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".onBoarding"/>
 
         <activity android:name=".SplashScreen">
             <intent-filter>
@@ -41,7 +39,7 @@
         <activity android:name=".BankVPN"/>
 
         <activity android:name=".Scan"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".onBoarding"/>
 
         <service
             android:name="com.example.jeanniesecure.ExampleJobIntentService"

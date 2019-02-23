@@ -18,17 +18,13 @@ public class SplashScreen extends AppCompatActivity{
 
     //Permissions to be requested
     public String[] permissions = {
-            /*Manifest.permission.ACCESS_FINE_LOCATION,*/
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE,
     };
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
@@ -59,12 +55,7 @@ public class SplashScreen extends AppCompatActivity{
     //Check permissions function, if any permission yet to be granted, function return false
     public boolean permissions_granted () {
         for (int i = 0; i < permissions.length ; i++){
-            /*if (i == 3) {
-                if (!Settings.canDrawOverlays(SplashScreen.this)) {
-                    // You don't have permission
-                    return false;
-                }
-            } else*/ if (i == 2) {
+            if (i == 2) {
                 if(!isAccessGranted()){
                     return false;
                 }

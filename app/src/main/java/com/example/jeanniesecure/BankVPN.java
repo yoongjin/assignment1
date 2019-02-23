@@ -1,5 +1,4 @@
 package com.example.jeanniesecure;
-//https://www.truiton.com/2015/05/capture-record-android-screen-using-mediaprojection-apis/
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -41,9 +40,12 @@ import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-/* BankVPN mainly does the function of screen recording where source code is taken from
+/* BankVPN mainly does the function of screen recording where source code is referenced from
  * https://www.truiton.com/2015/05/capture-record-android-screen-using-mediaprojection-apis/
- *  */
+ * onToggleScreenShare function starts and stop the recording and when recording stops,
+ * video is encrypted with AES and uploaded to our server using the Upload class.
+ * Once upload is complete, the video would be deleted from the user's phone.
+ * The encryption and uploading of video is fulfilled by the */
 public class BankVPN extends AppCompatActivity {
 
     private static final String TAG = "BankVPN";
@@ -140,12 +142,6 @@ public class BankVPN extends AppCompatActivity {
             stopScreenSharing();
             ExampleJobIntentService.redirected = false;
             uploadVideo();
-            Intent backtoInitialising = new Intent(BankVPN.this, Initialising.class);
-            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-            backtoInitialising.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(backtoInitialising);
         }
     }
 
