@@ -106,7 +106,7 @@ public class ExampleJobIntentService extends JobIntentService {
                 }
             }
             if(currentApp != null){
-                if (currentApp.equals("com.ocbc.mobile") && !redirected) {
+                if (currentApp.equals("com.dbs.sg.posbmbanking") && !redirected) {
                     Log.e(TAG, "iBanking app opened by user!");
                     MediaProjectionManager manager = (MediaProjectionManager)getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                     Intent permissionIntent = manager.createScreenCaptureIntent();
@@ -115,7 +115,7 @@ public class ExampleJobIntentService extends JobIntentService {
                     AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(AppIntent);
                     onStopCurrentWork();
-                }  else if (!currentApp.equals("com.ocbc.mobile") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
+                }  else if (!currentApp.equals("com.dbs.sg.posbmbanking") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
                     redirected = false;
                     Log.d(TAG, "Stop Recording ");
 
