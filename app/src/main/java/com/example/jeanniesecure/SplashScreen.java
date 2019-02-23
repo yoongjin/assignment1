@@ -6,24 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 public class SplashScreen extends AppCompatActivity{
     private Handler mWaitHandler = new Handler();
 
-
+    //Permissions to be requested
     public String[] permissions = {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+            /*Manifest.permission.ACCESS_FINE_LOCATION,*/
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            /*Manifest.permission.SYSTEM_ALERT_WINDOW,*/
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.RECORD_AUDIO,
@@ -36,7 +34,11 @@ public class SplashScreen extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        Log.d("JeannieSecure", "Team 10: LIM YOONG JIN(1700219), LAU KOK TIONG(1700619), LEE ZHEN HAO(1700858), TAN HWEI QIANG(1700013)");
 
+        // Checks if user has already given permission on the start of the app
+        // If any permission not yet granted, direct user to onBoarding Screen,
+        // Else, direct user to main application
         mWaitHandler.postDelayed(new Runnable() {
 
             @Override
@@ -47,21 +49,22 @@ public class SplashScreen extends AppCompatActivity{
                     Intent intent = new Intent(getApplicationContext(), Initialising.class);
                     startActivity(intent);
                 } else {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), onBoarding.class);
                         startActivity(intent);
                 }
             }
         }, 1000);  // Give a 1 seconds delay.
     }
 
+    //Check permissions function, if any permission yet to be granted, function return false
     public boolean permissions_granted () {
         for (int i = 0; i < permissions.length ; i++){
-            if (i == 3) {
+            /*if (i == 3) {
                 if (!Settings.canDrawOverlays(SplashScreen.this)) {
                     // You don't have permission
                     return false;
                 }
-            } else if (i == 4) {
+            } else*/ if (i == 2) {
                 if(!isAccessGranted()){
                     return false;
                 }
@@ -74,6 +77,7 @@ public class SplashScreen extends AppCompatActivity{
         return true;
     }
 
+    //
     private boolean isAccessGranted() {
         try {
             PackageManager packageManager = getPackageManager();

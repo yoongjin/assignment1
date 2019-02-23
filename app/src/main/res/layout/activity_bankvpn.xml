@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    android:paddingTop="40dp"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -23,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ToggleButton"
+        android:textAppearance="@android:style/TextAppearance.Material.Button"
         android:textOff="Redirect to iBanking App"
         android:textOn="Deactiviate Secure Channel" />
 
@@ -30,7 +32,7 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Screen Recording is required to detect any malicious activity"
+        android:text="To comply with MAS regulations, screen recording is required"
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
         android:textStyle="bold|italic" />

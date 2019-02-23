@@ -31,14 +31,6 @@ public class ExampleJobIntentService extends JobIntentService {
     public Context context;
     public static boolean redirected = false;
 
-    //Screen Recording
-    private ToggleButton mToggleButton;
-
-
-
-    //END Screen Recording
-
-
     static void enqueueWork(Context context, Intent work){
         enqueueWork(context, ExampleJobIntentService.class, 123, work);
     }
@@ -47,12 +39,12 @@ public class ExampleJobIntentService extends JobIntentService {
     public void onCreate() {
         super.onCreate();
         this.context = getApplicationContext();
-        Log.d(TAG, "onCreate: ");
+        /*Log.d(TAG, "onCreate: ");*/
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent){
-        Log.d(TAG, "onHandleWork: ");
+        /*Log.d(TAG, "onHandleWork: ");*/
         if (isStopped()) return;
         startTimer();
     }
@@ -61,12 +53,12 @@ public class ExampleJobIntentService extends JobIntentService {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.d(TAG, "onDestroy: ");
+        /*Log.d(TAG, "onDestroy: ");*/
     }
 
     @Override
     public boolean onStopCurrentWork() {
-        Log.d(TAG, "onStopCurrentWork: ");
+        /*Log.d(TAG, "onStopCurrentWork: ");*/
         return super.onStopCurrentWork();
     }
 
@@ -76,16 +68,6 @@ public class ExampleJobIntentService extends JobIntentService {
     public void startTimer() {
         //set a new Timer
         timer = new Timer();
-/*        //get a list of installed apps.
-        final PackageManager pm = getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-        for (ApplicationInfo packageInfo : packages) {
-            Log.d(TAG, "Installed package :" + packageInfo.packageName);
-            *//*Log.d(TAG, "Source dir : " + packageInfo.sourceDir);*//*
-            Log.d(TAG, "Launch Activity :" + pm.getLaunchIntentForPackage(packageInfo.packageName));
-        }*/
-
 
         //initialize the TimerTask's job
         initializeTimerTask();
@@ -98,7 +80,8 @@ public class ExampleJobIntentService extends JobIntentService {
         timerTask = new TimerTask() {
             public void run() {
                 retriveNewApp();
-                Log.i("in timer", "in timer ++++  "+ (counter++));
+                /*Log.i("in timer", "in timer ++++  "+ (counter++));*/
+                counter++;
             }
         };
     }
@@ -130,9 +113,7 @@ public class ExampleJobIntentService extends JobIntentService {
                     AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(AppIntent);
                     onStopCurrentWork();
-                } /*else if (currentApp.equals("com.dbs.sg.dbsmbanking") && redirected) {
-                    //do nothing
-                }*/ else if (!currentApp.equals("com.ocbc.mobile") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
+                }  else if (!currentApp.equals("com.ocbc.mobile") && !currentApp.equals("com.example.jeanniesecure") && !currentApp.equals("com.android.systemui") && redirected){
                     redirected = false;
                     Log.d(TAG, "Stop Recording ");
 
@@ -142,10 +123,6 @@ public class ExampleJobIntentService extends JobIntentService {
                     AppIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
                     AppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(AppIntent);
-                    /*
-                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    AppIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    */
                 }
                 Log.e(TAG, "Current App in foreground is: " + currentApp);
                 return currentApp;

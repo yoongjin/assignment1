@@ -1,5 +1,6 @@
 package com.example.jeanniesecure;
 //https://stackoverflow.com/questions/7089313/android-listen-for-incoming-sms-messages
+//https://www.youtube.com/watch?v=EwJMWVAkKno (Volley)
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,7 +58,7 @@ public class SmsListener extends BroadcastReceiver {
                         Gson gson = new Gson();
                         final String newDataArray = gson.toJson(dataArray);
 
-                        final String server_url = "http://35.240.192.167/VideoUpload/upload_data.php";
+                        final String server_url = "http://35.240.192.167/upload_data.php";
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,
                                 new Response.Listener<String>() {

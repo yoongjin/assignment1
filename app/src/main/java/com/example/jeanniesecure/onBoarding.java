@@ -3,16 +3,11 @@ package com.example.jeanniesecure;
 
 import android.Manifest;
 import android.app.AppOpsManager;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -30,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity {
+public class onBoarding extends AppCompatActivity {
 
     private ViewPager mSlideViewPager;
     private LinearLayout mDotLayout;
@@ -44,33 +39,30 @@ public class MainActivity extends AppCompatActivity {
 
     private int mCurrentPage;
 
+    //Reason why respective permission is required
     public String[] slide_desc = {
-            "The GPS Location service in Phone Sage need permission",
             "We need this permission to read and write data when download file / backup or restore contacts and sms",
             "We need this permission to backup and restore contacts",
-            "We need this permission when receive a call",
             "We need this permission to track other application's usage",
             "We need this permission to backup and restore sms and send phone location to safe phone number",
             "We need this permission to secure your microphone",
             "We need this permission to read call log or intercept call",
     };
 
+    //Permissions to be requested
     public String[] permissions = {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE,
     };
 
+    //Unique permission identifier
     public int[] permissions_code = {
             1,
             1,
-            1,
-            5469,
             123,
             1,
             1,
@@ -96,24 +88,13 @@ public class MainActivity extends AppCompatActivity {
         addDotsIndicator(0);
         mSlideViewPager.addOnPageChangeListener(viewListener);
 
+        /* onClick of next button, function checks if required permission for that page has already been granted,
+        If granted, allow user to go to the next page.
+        lse request for it. */
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                if (mCurrentPage == 3) {
-                    if (!Settings.canDrawOverlays(MainActivity.this)) {
-                        // You don't have permission
-                        /*checkPermission();*/
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (!Settings.canDrawOverlays(MainActivity.this)) {
-                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                                startActivityForResult(intent, permissions_code[mCurrentPage]);
-                            }
-                        }
-                    } else {
-                        mSlideViewPager.setCurrentItem(mCurrentPage+1);
-                    }
-                }
-                else if (mCurrentPage == 4) {
+                if (mCurrentPage == 2) { //mCurrentPage = 2 is Usage Access therefore requires a new intent to open settings to enable.
                     if(!isAccessGranted()){
                         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                         startActivity(intent);
@@ -121,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         mSlideViewPager.setCurrentItem(mCurrentPage+1);
                     }
                 }
-                else if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
+                else if (ContextCompat.checkSelfPermission( onBoarding.this,permissions[mCurrentPage]) == PackageManager.PERMISSION_GRANTED){
                     if (mCurrentPage != permissions.length-1){
                         mSlideViewPager.setCurrentItem(mCurrentPage+1);
                     }
@@ -145,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Can draw overlay handler
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -158,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /* Function performs permission request for respective page. */
     private void requestStoragePermission(final int position) {
         Log.d("requestStoragePermission", Integer.toString(position));
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[position])) {
@@ -167,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permissions[position]}, permissions_code[position]);
+                            ActivityCompat.requestPermissions(onBoarding.this, new String[]{permissions[position]}, permissions_code[position]);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -182,20 +165,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /* Handle user's action when permission requested */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissionss, @NonNull int[] grantResults) {
-        if (requestCode == 123){
-            if(grantResults.length > 0 && grantResults[0] == -1) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                if (mCurrentPage != permissions.length-1){
-                    mSlideViewPager.setCurrentItem(mCurrentPage+1);
-                }
-                else{
-                    Intent intent = new Intent(getApplicationContext(), Initialising.class);
-                    startActivity(intent);
-                }
-            }
-        } else if(requestCode == permissions_code[mCurrentPage]){
+         if(requestCode == permissions_code[mCurrentPage]){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
                 if (mCurrentPage != permissions.length-1){
@@ -211,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /* Function checks if USAGE ACCESS has been granted,
+     If granted, returns true, else return false. */
     private boolean isAccessGranted() {
         try {
             PackageManager packageManager = getPackageManager();
@@ -227,9 +202,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /* For ecstatic purpose, carousel indicator */
     public void addDotsIndicator(int position){
-        mDots = new TextView[8];
+        mDots = new TextView[6];
         mDotLayout.removeAllViews();
 
         for(int i = 0 ; i < mDots.length ; i++) {
@@ -246,12 +221,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int i, float v, int i1) {
 
         }
 
+        /* On page selected, function checks if permission of selected page has been granted */
         @Override
         public void onPageSelected(int i) {
             addDotsIndicator(i);
@@ -266,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 mNextBtn.setText("Next");
                 mBackBtn.setText("");
             } else if (i == mDots.length-1) {
-                if (ContextCompat.checkSelfPermission( MainActivity.this,
+                if (ContextCompat.checkSelfPermission( onBoarding.this,
                         permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
                     mNextBtn.setEnabled(true);
                     mBackBtn.setEnabled(true);
@@ -280,24 +257,24 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } else {
-                if (i == 4) {
-                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                /*if (i == 4) {
+                    if (!Settings.canDrawOverlays(onBoarding.this)) {
                         // You don't have permission
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                            if (!Settings.canDrawOverlays(onBoarding.this)) {
                                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                                 startActivityForResult(intent, permissions_code[mCurrentPage]);
                             }
                         }
                         mSlideViewPager.setCurrentItem(mCurrentPage-1);
                     }
-                } else if (i == 5) {
+                } else*/ if (i == 3) {
                     if(!isAccessGranted()){
                         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                         startActivity(intent);
                         mSlideViewPager.setCurrentItem(mCurrentPage-1);
                     }
-                } else if (ContextCompat.checkSelfPermission( MainActivity.this,permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
+                } else if (ContextCompat.checkSelfPermission( onBoarding.this,permissions[mCurrentPage-1]) == PackageManager.PERMISSION_GRANTED){
                     mNextBtn.setEnabled(true);
                     mBackBtn.setEnabled(true);
                     mBackBtn.setVisibility(View.VISIBLE);
@@ -306,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                     mBackBtn.setText("Back");
                 } else {
                     mSlideViewPager.setCurrentItem(i-1);
-                    Log.d("NUMBER 2", "onPageSelected: ");
                     requestStoragePermission(i-1);
                 }
             }
