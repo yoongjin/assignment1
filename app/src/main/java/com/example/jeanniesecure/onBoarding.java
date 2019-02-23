@@ -142,7 +142,6 @@ public class onBoarding extends AppCompatActivity {
 
     /* Function performs permission request for respective page. */
     private void requestStoragePermission(final int position) {
-        Log.d("requestStoragePermission", Integer.toString(position));
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[position])) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")

