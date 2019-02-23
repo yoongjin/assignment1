@@ -3,9 +3,8 @@ package com.example.jeanniesecure;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -50,48 +49,36 @@ public class Scan extends AppCompatActivity {
         packageText = (TextView) findViewById(R.id.packageText);
         packageIcon = (ImageView) findViewById(R.id.packageIcon);
         sensitive_application = (LinearLayout) findViewById(R.id.sensitive_application);
-        class ScanProcess extends AsyncTask<Void, Void, Void> {
-            @Override
-            protected void onPostExecute(Void s) {
-                super.onPostExecute(s);
-                scanText.setText("Scan Complete!");
-            }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                // get a list of installed apps.
-                final PackageManager pm = getPackageManager();
-                final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-                // Loop through all the packages and changes the icon and package name to mimic a scanning process
+        // get a list of installed apps.
+        final PackageManager pm = getPackageManager();
+        final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
-                Handler handler1 = new Handler();
+        // Loop through all the packages and changes the icon and package name to mimic a scanning process
+        for (final ApplicationInfo packageInfo : packages) {
 
-                for (final ApplicationInfo packageInfo : packages) {
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Drawable icon = pm.getApplicationIcon(packageInfo.packageName);
-                                packageIcon.setImageDrawable(icon);
-                                packageText.setText(packageInfo.packageName);
-                                if (sensitive_apps.contains(packageInfo.packageName)){
-                                    ImageView iv = new ImageView(getApplicationContext());
-                                    iv.setImageDrawable(icon);
-                                    sensitive_application.addView(iv);
-                                }
-                            }
-                            catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, 1000);
+            new CountDownTimer(1000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
                 }
-                return null;
-            }
+                public void onFinish() {
+                    //scanText.setText("Scanning...");
+                    try{
+                        Drawable icon = pm.getApplicationIcon(packageInfo.packageName);
+                        packageIcon.setImageDrawable(icon);
+                        packageText.setText(packageInfo.packageName);
+                        if (sensitive_apps.contains(packageInfo.packageName)){
+                            ImageView iv = new ImageView(getApplicationContext());
+                            iv.setImageDrawable(icon);
+                            sensitive_application.addView(iv);
+                        }
+                    }catch (Exception ex){}
+                }
+            }.start();
+            scanText.setText("Scan for threats!");
+
         }
-        ScanProcess uv = new ScanProcess();
-        uv.execute();
     }
 }
 
