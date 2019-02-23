@@ -257,18 +257,7 @@ public class onBoarding extends AppCompatActivity {
                 }
 
             } else {
-                /*if (i == 4) {
-                    if (!Settings.canDrawOverlays(onBoarding.this)) {
-                        // You don't have permission
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (!Settings.canDrawOverlays(onBoarding.this)) {
-                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                                startActivityForResult(intent, permissions_code[mCurrentPage]);
-                            }
-                        }
-                        mSlideViewPager.setCurrentItem(mCurrentPage-1);
-                    }
-                } else*/ if (i == 3) {
+                if (i == 3) {
                     if(!isAccessGranted()){
                         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                         startActivity(intent);
